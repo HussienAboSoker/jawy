@@ -6,6 +6,22 @@ import 'package:jawy/views/search_view.dart';
 import 'package:jawy/widgets/nowhether_view.dart';
 import 'package:jawy/widgets/wethaer_view.dart';
 
+abstract class WeatherRepository {
+  Future<WeatherModel> fetchWeather(String city);
+ 
+}
+
+class DioWeatherRepository implements WeatherRepository {
+  final Dio _dio;
+
+  DioWeatherRepository(this._dio);
+
+  @override
+  Future<WeatherModel> fetchWeather(String city) {
+    return WeatherService(_dio).getWeather(city: city);
+  }
+}
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -14,8 +30,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  WeatherModel? weatherModel;
-  bool isLoading = true;
+  final WeatherRepository _weatherRepository = DioWeatherRepository(Dio());
+  WeatherModel? _weatherModel;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -24,19 +41,50 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _loadWeather(String city) async {
-    setState(() => isLoading = true);
+    _setLoading(true);
     try {
-      final model = await WeatherService(Dio()).getWeather(city: city);
-      setState(() {
-        weatherModel = model;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        weatherModel = null;
-        isLoading = false;
-      });
+      final model = await _weatherRepository.fetchWeather(city);
+      _updateWeather(model);
+    } catch (_) {
+      _updateWeather(null);
     }
+  }
+
+  void _setLoading(bool value) {
+    setState(() {
+      _isLoading = value;
+    });
+  }
+
+  void _updateWeather(WeatherModel? model) {
+    setState(() {
+      _weatherModel = model;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _openSearch() async {
+    final result = await Navigator.push<WeatherModel?>(
+      context,
+      MaterialPageRoute(builder: (context) => const SearchView()),
+    );
+
+    if (result != null) {
+      _updateWeather(result);
+    }
+  }
+
+ 
+ // Helper method to build the body of the Scaffold based on the current state
+  Widget _buildBody() {
+    if(_weatherModel==null){
+      return const NowhetherView();
+    }
+    if(_isLoading){
+        return const CircularProgressIndicator();
+    }
+
+    return WethaerView(weatherModel: _weatherModel!);
   }
 
   @override
@@ -45,26 +93,14 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SearchView()),
-              );
-              if (result != null && result is WeatherModel) {
-                setState(() => weatherModel = result);
-              }
-            },
+            onPressed: _openSearch,
             icon: const Icon(Icons.search),
           ),
         ],
         centerTitle: true,
         title: const Text('JAWY'),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : weatherModel != null
-              ? WethaerView(weatherModel: weatherModel!)
-              : const NowhetherView(),
+      body: _buildBody(),
     );
   }
 }
