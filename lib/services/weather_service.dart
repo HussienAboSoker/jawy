@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:jawy/models/wheather_model.dart';
 
@@ -11,7 +13,7 @@ class WeatherService {
 
     try {
       final Response response = await _dio.get(url);
-
+       
       return WeatherModel.fromJson(response.data);
     } on DioException catch (e) {
       // Handle specific exceptions based on the type of DioException
@@ -26,13 +28,13 @@ class WeatherService {
       } else if (e.type == DioExceptionType.unknown) {
         throw Exception(
             "No internet connection. Please check your network settings.");
-      } else if (e.type == DioExceptionType.badResponse) {
-        throw Exception(
-            "Received invalid response from the server. Please try again later.");
-      }
-      String message =
+      }else {
+        String message =
           e.response?.data["error"]["message"] ?? "An error occurred";
-      throw Exception(message);
+      
+      throw Exception(message);}
+      
+      
     } catch (e) {
       throw Exception("An unexpected error occurred: $e");
     }

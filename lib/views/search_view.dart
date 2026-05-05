@@ -1,4 +1,9 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:jawy/models/wheather_model.dart';
+import 'package:jawy/services/weather_service.dart';
 
 class SearchView extends StatelessWidget {
   const SearchView({super.key});
@@ -9,11 +14,15 @@ class SearchView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Search'),
       ),
-      body:  Center(
+      body: Center(
         child: TextField(
+          onSubmitted: (value) async {
+            WeatherModel weatherModel =
+                await WeatherService(Dio()).getWeather(city: value);
+                log(weatherModel.cityName);
+          },
           maxLines: 1,
           controller: TextEditingController(),
-
           decoration: const InputDecoration(
             labelText: 'Search for a city',
             //hintText: 'Search for a city',
