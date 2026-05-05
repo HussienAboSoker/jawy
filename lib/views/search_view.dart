@@ -1,8 +1,33 @@
-
 import 'package:flutter/material.dart';
 
-class SearchView extends StatelessWidget {
+class SearchView extends StatefulWidget {
   const SearchView({super.key});
+
+  @override
+  State<SearchView> createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  final TextEditingController _controller = TextEditingController();
+  String? _errorText;
+
+  void _submit() {
+    final city = _controller.text.trim();
+    if (city.isEmpty) {
+      setState(() {
+        _errorText = 'Please enter a city name.';
+      });
+      return;
+    }
+
+    Navigator.pop(context, city);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,48 +35,43 @@ class SearchView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Search'),
       ),
-      body: Center(
-        child: TextField(
-          onSubmitted: (value) async {
-            // try {
-            //   WeatherModel weatherModel =
-            //       await WeatherService(Dio()).getWeather(city: value);
-            //   log(weatherModel.cityName);
-            //   Navigator.pop(context, weatherModel);
-            // } catch (e) {
-            //   // Show error message
-            //   ScaffoldMessenger.of(context).showSnackBar(
-            //     SnackBar(content: Text('Error: ${e.toString()}')),
-            //   );
-            //   // Don't pop, let user try again
-            // }
-          },
-          maxLines: 1,
-          controller: TextEditingController(),
-          decoration: const InputDecoration(
-            labelText: 'Search for a city',
-            //hintText: 'Search for a city',
-            border: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.blue,
-                width: 2.0,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _controller,
+              onChanged: (_) {
+                if (_errorText != null) {
+                  setState(() {
+                    _errorText = null;
+                  });
+                }
+              },
+              onSubmitted: (_) => _submit(),
+              decoration: InputDecoration(
+                labelText: 'Search for a city',
+                errorText: _errorText,
+                border: const OutlineInputBorder(),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.blue,
+                    width: 2.0,
+                  ),
+                ),
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
-            // enabledBorder: OutlineInputBorder(
-            //   borderSide: BorderSide(
-            //     color: Colors.blue,
-            //     width: 2.0,
-            //   ),
-            // ),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.red,
-                width: 2.0,
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _submit,
+                child: const Text('Search'),
               ),
             ),
-            prefixIcon: Icon(Icons.search),
-          ),
+          ],
         ),
       ),
     );

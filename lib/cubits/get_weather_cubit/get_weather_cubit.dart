@@ -7,18 +7,15 @@ import 'package:jawy/services/weather_service.dart';
 class GetWeatherCubit extends Cubit<GetWeatherState> {
   GetWeatherCubit() : super(GetWeatherInitialState());
 
-  Future<WeatherModel> getWeather(String city) async {
-   
+  Future<void> getWeather(String city) async {
     emit(GetWeatherLoadingState());
+
     try {
-      WeatherModel weatherModel =
+      final weatherModel =
           await WeatherService(Dio()).getWeather(city: city);
-      emit(GetWeatherSuccessState());
-      return weatherModel;
+      emit(GetWeatherSuccessState(weatherModel));
     } catch (e) {
-      emit(GetWeatherErrorState());
-      rethrow; // Rethrow the error to be handled by the caller
+      emit(GetWeatherErrorState(e.toString()));
     }
-  
   }
 }
