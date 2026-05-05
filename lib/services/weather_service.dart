@@ -1,10 +1,11 @@
-
 import 'package:dio/dio.dart';
 import 'package:jawy/models/wheather_model.dart';
 
 class WeatherService {
-  final _dio;
+  final Dio _dio;
+
   WeatherService(this._dio);
+
   Future<WeatherModel> getWeather({required String city}) async {
     const String baseApi = 'https://api.weatherapi.com/v1/forecast.json?';
     const String apiKey = 'key=e30d28c544c74872b25135153232505';
@@ -12,30 +13,34 @@ class WeatherService {
 
     try {
       final Response response = await _dio.get(url);
-       
+
       return WeatherModel.fromJson(response.data);
     } on DioException catch (e) {
-      // Handle specific exceptions based on the type of DioException
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
           e.type == DioExceptionType.sendTimeout) {
-        throw Exception("Connection timed out. Please try again later.");
-        //
-      } else if (e.type == DioExceptionType.badCertificate) {
+        throw Exception('Connection timed out. Please try again later.');
+      }
+
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown) {
         throw Exception(
-            "Invalid SSL certificate. Please check your connection.");
-      } else if (e.type == DioExceptionType.unknown) {
+          'Internet connection failed. Please check your network and try again.',
+        );
+      }
+
+      if (e.type == DioExceptionType.badCertificate) {
         throw Exception(
-            "No internet connection. Please check your network settings.");
-      }else {
-        String message =
-          e.response?.data["error"]["message"] ?? "An error occurred";
-      
-      throw Exception(message);}
-      
-      
+          'Invalid SSL certificate. Please check your connection.',
+        );
+      }
+
+      final message = e.response?.data['error']?['message'] ??
+          e.message ??
+          'An error occurred while fetching weather.';
+      throw Exception(message);
     } catch (e) {
-      throw Exception("An unexpected error occurred: $e");
+      throw Exception('An unexpected error occurred: $e');
     }
   }
 }
