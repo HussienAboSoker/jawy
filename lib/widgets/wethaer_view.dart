@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:jawy/models/wheather_model.dart';
 
 class WethaerView extends StatelessWidget {
-  const WethaerView({super.key});
-
+  const WethaerView({super.key, required this.weatherModel});
+  final WeatherModel weatherModel;
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        const Text('Sohag, Egypt',
-            style: TextStyle(
+         Text(weatherModel.cityName,
+            style: const TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
             ),
             ),
-        const Text('update: 12:00 PM',
-            style: TextStyle(
+         Text('update: ${weatherModel.dateTime}',
+            style: const TextStyle(
               fontSize: 16,
             ),
             ),
@@ -27,19 +28,19 @@ class WethaerView extends StatelessWidget {
               height: 100,
               width: 100,
             ),
-            const Text("17°",
-                style: TextStyle(
+             Text('${weatherModel.averageTemperature.toInt()}°',
+                style: const TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 )),
-            const Column(
+             Column(
               children: [
-                 Text('max: 20°',
-                    style: TextStyle(
+                 Text('${weatherModel.maxTemperature.toInt()}°',
+                    style: const TextStyle(
                       fontSize: 16,
                     ),),
-                 Text('min: 15°',
-                    style: TextStyle(
+                 Text('${weatherModel.minTemperature.toInt()}°',
+                    style: const TextStyle(
                       fontSize: 16,
                     ),
                     ),

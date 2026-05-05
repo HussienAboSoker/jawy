@@ -17,9 +17,18 @@ class SearchView extends StatelessWidget {
       body: Center(
         child: TextField(
           onSubmitted: (value) async {
-            WeatherModel weatherModel =
-                await WeatherService(Dio()).getWeather(city: value);
-                log(weatherModel.cityName);
+            try {
+              WeatherModel weatherModel =
+                  await WeatherService(Dio()).getWeather(city: value);
+              log(weatherModel.cityName);
+              Navigator.pop(context, weatherModel);
+            } catch (e) {
+              // Show error message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${e.toString()}')),
+              );
+              // Don't pop, let user try again
+            }
           },
           maxLines: 1,
           controller: TextEditingController(),
