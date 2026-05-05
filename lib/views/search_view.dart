@@ -1,9 +1,5 @@
-import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:jawy/models/wheather_model.dart';
-import 'package:jawy/services/weather_service.dart';
 
 class SearchView extends StatelessWidget {
   const SearchView({super.key});

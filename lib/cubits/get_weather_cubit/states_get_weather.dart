@@ -1,4 +1,3 @@
-import 'package:jawy/models/wheather_model.dart';
 
 class GetWeatherState {}
 
