@@ -19,16 +19,23 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Jawy Weather',
         theme: ThemeData(
-          colorScheme: const ColorScheme.light(
-            primary: Colors.blue,
-            secondary: Colors.lightBlue,
-            surface: Colors.white,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.indigo,
+            brightness: Brightness.light,
           ),
           useMaterial3: true,
+          scaffoldBackgroundColor: Colors.grey[50],
+          cardTheme: CardTheme(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            foregroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            elevation: 1,
+            foregroundColor: Colors.black87,
+            surfaceTintColor: Colors.white,
           ),
         ),
         home: const HomeView(),

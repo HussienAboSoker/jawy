@@ -22,6 +22,9 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 600;
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -32,41 +35,30 @@ class HomeView extends StatelessWidget {
         ],
         centerTitle: true,
         title: const Text('JAWY'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      extendBodyBehindAppBar: true,
       body: BlocBuilder<GetWeatherCubit, GetWeatherState>(
         builder: (context, state) {
           if (state is GetWeatherLoadingState) {
-            return Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.blue, Colors.lightBlueAccent],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: const Center(child: CircularProgressIndicator()),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state is GetWeatherErrorState) {
-            return Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.redAccent, Colors.orangeAccent],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    state.message,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
-                    textAlign: TextAlign.center,
+            return Center(
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: isSmallScreen ? 16 : 32),
+                child: Card(
+                  color: Colors.red[50],
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      state.message,
+                      style: TextStyle(
+                        color: Colors.red[700],
+                        fontSize: isSmallScreen ? 16 : 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
@@ -74,23 +66,31 @@ class HomeView extends StatelessWidget {
           }
 
           if (state is GetWeatherSuccessState) {
-            return WethaerView(weatherModel: state.weatherModel);
+            return Padding(
+              padding: EdgeInsets.all(isSmallScreen ? 8 : 16),
+              child: WethaerView(weatherModel: state.weatherModel),
+            );
           }
 
-          return Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.grey, Colors.blueGrey],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: const Center(
-              child: Text(
-                'Search for a city using the search icon.',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.wb_sunny_outlined,
+                  size: isSmallScreen ? 64 : 80,
+                  color: Colors.grey[400],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Search for a city using the search icon.',
+                  style: TextStyle(
+                    fontSize: isSmallScreen ? 16 : 18,
+                    color: Colors.grey[600],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           );
         },

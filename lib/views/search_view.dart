@@ -47,75 +47,75 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 600;
+    final padding = isSmallScreen ? 16.0 : 24.0;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search City'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      extendBodyBehindAppBar: true,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue, Colors.lightBlueAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 80), // Space for app bar
-              Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _controller,
-                        onChanged: _onSearchChanged,
-                        decoration: InputDecoration(
-                          labelText: 'Enter city name',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+      body: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          children: [
+            Card(
+              child: Padding(
+                padding: EdgeInsets.all(padding),
+                child: Column(
+                  children: [
+                    Text(
+                      'Find Your City',
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 18 : 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _controller,
+                      onChanged: _onSearchChanged,
+                      decoration: InputDecoration(
+                        labelText: 'Enter city name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2.0,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Colors.blue,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          prefixIcon: const Icon(Icons.location_city),
-                          filled: true,
-                          fillColor: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.location_city),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                      ),
+                    ),
+                    if (_isLoading)
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    if (_suggestions.isNotEmpty)
+                      SizedBox(
+                        height: isSmallScreen ? 150 : 200,
+                        child: ListView.builder(
+                          itemCount: _suggestions.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(_suggestions[index]),
+                              onTap: () => _selectCity(_suggestions[index]),
+                              leading: const Icon(Icons.location_on),
+                            );
+                          },
                         ),
                       ),
-                      if (_isLoading) const CircularProgressIndicator(),
-                      if (_suggestions.isNotEmpty)
-                        SizedBox(
-                          height: 200,
-                          child: ListView.builder(
-                            itemCount: _suggestions.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(_suggestions[index]),
-                                onTap: () => _selectCity(_suggestions[index]),
-                              );
-                            },
-                          ),
-                        ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
