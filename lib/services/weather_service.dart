@@ -9,7 +9,7 @@ class WeatherService {
   Future<WeatherModel> getWeather({required String city}) async {
     const String baseApi = 'https://api.weatherapi.com/v1/forecast.json?';
     const String apiKey = 'key=e30d28c544c74872b25135153232505';
-    final url = '$baseApi$apiKey&q=$city&days=10';
+    final url = '$baseApi$apiKey&q=$city&days=7';
 
     try {
       final Response response = await _dio.get(url);
@@ -41,6 +41,20 @@ class WeatherService {
       throw Exception(message);
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<List<String>> searchCities({required String query}) async {
+    const String baseApi = 'https://api.weatherapi.com/v1/search.json?';
+    const String apiKey = 'key=e30d28c544c74872b25135153232505';
+    final url = '$baseApi$apiKey&q=$query';
+
+    try {
+      final Response response = await _dio.get(url);
+      final List data = response.data;
+      return data.map((item) => '${item['name']}, ${item['country']}').toList();
+    } catch (e) {
+      return [];
     }
   }
 }

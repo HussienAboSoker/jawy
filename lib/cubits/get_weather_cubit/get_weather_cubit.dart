@@ -16,4 +16,12 @@ class GetWeatherCubit extends Cubit<GetWeatherState> {
       emit(GetWeatherErrorState(e.toString()));
     }
   }
+
+  Future<List<String>> searchCities(String query) async {
+    try {
+      return await WeatherService(Dio()).searchCities(query: query);
+    } catch (e) {
+      return [];
+    }
+  }
 }

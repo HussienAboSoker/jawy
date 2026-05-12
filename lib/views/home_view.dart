@@ -32,35 +32,65 @@ class HomeView extends StatelessWidget {
         ],
         centerTitle: true,
         title: const Text('JAWY'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
+      extendBodyBehindAppBar: true,
       body: BlocBuilder<GetWeatherCubit, GetWeatherState>(
         builder: (context, state) {
           if (state is GetWeatherLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.lightBlueAccent],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: const Center(child: CircularProgressIndicator()),
+            );
           }
 
           if (state is GetWeatherErrorState) {
-            return Center(
-              child: Text(
-                state.message,
-                style: const TextStyle(color: Colors.red, fontSize: 16),
-                textAlign: TextAlign.center,
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.redAccent, Colors.orangeAccent],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    state.message,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             );
           }
 
           if (state is GetWeatherSuccessState) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: WethaerView(weatherModel: state.weatherModel),
-            );
+            return WethaerView(weatherModel: state.weatherModel);
           }
 
-          return const Center(
-            child: Text(
-              'Search for a city using the search icon.',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.grey, Colors.blueGrey],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'Search for a city using the search icon.',
+                style: TextStyle(fontSize: 16, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
             ),
           );
         },

@@ -17,12 +17,19 @@ class MyApp extends StatelessWidget {
       create: (context) => GetWeatherCubit(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Jawy Weather',
         theme: ThemeData(
-          // This works for code too, not just values: Most code changes can be
-          // tested with just a hot reload.
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: const ColorScheme.light(
+            primary: Colors.blue,
+            secondary: Colors.lightBlue,
+            surface: Colors.white,
+          ),
           useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            foregroundColor: Colors.white,
+          ),
         ),
         home: const HomeView(),
       ),
