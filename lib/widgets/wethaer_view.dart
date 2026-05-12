@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jawy/models/wheather_model.dart';
+import 'package:jawy/models/models.dart';
 
 class WethaerView extends StatelessWidget {
   const WethaerView({super.key, required this.weatherModel});

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:jawy/models/wheather_model.dart';
+import 'package:jawy/models/models.dart';
 
 class WeatherService {
   final Dio _dio;
